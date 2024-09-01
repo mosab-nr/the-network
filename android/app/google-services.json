@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "780752413638",
+    "project_id": "the-netwrok",
+    "storage_bucket": "the-netwrok.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780752413638:android:235261f98383b6c79408c7",
+        "android_client_info": {
+          "package_name": "com.mosab.thenetwork.the_network"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780752413638-q4afqv2k2jl4i0i742ab36jbsep6bt71.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw6rAyKGzExbE1fMNrqm9-uWIHWyjVcgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780752413638-q4afqv2k2jl4i0i742ab36jbsep6bt71.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "780752413638-5dhfpftjnj79fh1bkokqksus30v27gdn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mosab.thenetwork.theNetwork"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
