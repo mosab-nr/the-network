@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:the_network/core/constants/routes_name.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -55,22 +58,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16.0),
                 TextButton(
-                  onPressed: () {}, child: Text('هل نسيت كلمة المرور؟'),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                        context, RouteName.forgotPassword);
+                  },
+                  child: const Text('هل نسيت كلمة المرور؟'),
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Perform login action
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('جاري تسجيل الدخول ...')),
-                      );
-                    }
+                    _login();
                   },
-                  child: const Text('تسجيل الدخول'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 48.0),
                   ),
+                  child: const Text('تسجيل الدخول'),
                 ),
                 const SizedBox(height: 16.0),
                 Row(
@@ -80,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       onPressed: () {
                         // Navigate to register screen
+                        Navigator.pushNamed(context, RouteName.register);
                       },
                       child: const Text('سجل الآن'),
                     ),
@@ -91,5 +94,36 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _login() async {
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text, password: _passwordController.text);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
+        );
+        Navigator.pushReplacementNamed(context, RouteName.universities);
+      }
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'user-not-found') {
+        message = 'البريد الإلكتروني غير موجود';
+      } else if (e.code == 'wrong-password') {
+        message = 'كلمة المرور غير صحيحة';
+      } else if (e.code == 'too-many-requests') {
+        message =
+            'تم حظر جميع الطلبات من هذا الجهاز بسبب نشاط غير عادي. حاول مرة أخرى لاحقًا أو أعد تعيين كلمة المرور الخاصة بك.';
+      } else {
+        message = 'حدث خطأ غير معروف';
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    }
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:the_network/presentation/screens/authintication/create_new_password/create_new_password_screen.dart';
-import 'package:the_network/presentation/screens/authintication/universities/universities_screen.dart';
-
-import 'core/theme/theme.dart';
+import 'package:the_network/core/constants/routes_name.dart';
+import 'package:the_network/routes_generator.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +9,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       themeMode: ThemeMode.system,
-      home: UniversitiesScreen()
+      onGenerateRoute: RouteGenerator.generateRoute,
+      initialRoute: RouteName.login,
     );
   }
 }

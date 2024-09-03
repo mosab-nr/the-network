@@ -7,7 +7,7 @@ class MyElevatedButtonTheme {
     style: ElevatedButton.styleFrom(
       elevation: 0,
       foregroundColor: Colors.white,
-      backgroundColor: Color(0xFF383D43),
+      backgroundColor: const Color(0xFF383D43),
       disabledForegroundColor: Colors.grey,
       disabledBackgroundColor: Colors.grey,
     ),
@@ -16,7 +16,7 @@ class MyElevatedButtonTheme {
     style: ElevatedButton.styleFrom(
       elevation: 0,
       foregroundColor: Colors.white,
-      backgroundColor: Color(0xFF383D43),
+      backgroundColor: const Color(0xFF383D43),
       disabledForegroundColor: Colors.grey,
       disabledBackgroundColor: Colors.grey,
     ),

@@ -62,10 +62,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       _showToast('تحقق من بريدك الإلكتروني');
                     }
                   },
-                  child: const Text('إرسال التحقق'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 48.0),
                   ),
+                  child: const Text('إرسال التحقق'),
                 ),
               ],
             ),

@@ -67,10 +67,10 @@ class _CreateNewPasswordScreenState extends State<CreateNewPasswordScreen> {
                       );
                     }
                   },
-                  child: const Text('إنشاء كلمة مرور جديدة'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 48.0),
                   ),
+                  child: const Text('إنشاء كلمة مرور جديدة'),
                 ),
               ],
             ),

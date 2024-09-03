@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../widgets/botton_navigation_bar.dart';
 import '../../../widgets/university_card.dart';
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'custom_bottom_navigation_bar.dart';
-// import 'university_card.dart';
 
 class UniversitiesScreen extends StatefulWidget {
   const UniversitiesScreen({super.key});
@@ -17,7 +14,6 @@ class UniversitiesScreen extends StatefulWidget {
 class _UniversitiesScreenState extends State<UniversitiesScreen> {
   late Future<List<Map<String, dynamic>>> _universitiesFuture;
 
-  /*
   @override
   void initState() {
     super.initState();
@@ -28,7 +24,6 @@ class _UniversitiesScreenState extends State<UniversitiesScreen> {
     final snapshot = await FirebaseFirestore.instance.collection('universities').get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
-*/
 
   @override
   Widget build(BuildContext context) {

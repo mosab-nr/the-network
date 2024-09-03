@@ -11,16 +11,16 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    Center(child: Text('الجامعات')),
-    Center(child: Text('المسابقات')),
-    Center(child: Text('الملخصات')),
-    Center(child: Text('أخرى')),
+    const Center(child: Text('الجامعات')),
+    const Center(child: Text('المسابقات')),
+    const Center(child: Text('الملخصات')),
+    const Center(child: Text('أخرى')),
   ];
 
   final List<Widget> _otherTabs = [
-    Center(child: Text('التصويت')),
-    Center(child: Text('الشكاوى')),
-    Center(child: Text('الإقتراحات')),
+    const Center(child: Text('التصويت')),
+    const Center(child: Text('الشكاوى')),
+    const Center(child: Text('الإقتراحات')),
   ];
 
   @override
