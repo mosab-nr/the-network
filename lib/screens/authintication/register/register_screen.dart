@@ -90,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextButton(
                       onPressed: () {
                         // Navigate to login screen
-                        Navigator.pushReplacementNamed(context, RouteName.login);
+                        Navigator.pushNamed(context, RouteName.login);
                       },
                       child: const Text('تسجيل الدخول'),
                     ),
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم إنشاء الحساب بنجاح')));
 
-          Navigator.pushReplacementNamed(context, RouteName.login);
+          Navigator.pushNamed(context, RouteName.login);
         }
       } on FirebaseAuthException catch (e) {
         String message;

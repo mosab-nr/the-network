@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16.0),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamed(
                         context, RouteName.forgotPassword);
                   },
                   child: const Text('هل نسيت كلمة المرور؟'),
@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
         );
-        Navigator.pushReplacementNamed(context, RouteName.mainScreen);
+        Navigator.pushNamed(context, RouteName.mainScreen);
       }
     } on FirebaseAuthException catch (e) {
       String message;

@@ -22,7 +22,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('تم إرسال رابط إعادة تعيين كلمة المرور')),
           );
-          Navigator.pushReplacementNamed(context, RouteName.login);
+          Navigator.pushNamed(context, RouteName.login);
         }
       } on FirebaseAuthException catch (e) {
         String message;

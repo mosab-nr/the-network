@@ -6,5 +6,7 @@ class RouteName {
   static const String createNewPassword = '/create-new-password';
   static const String mainScreen = '/main-screen';
   static const String universities = '/universities';
+  static const String competitionsScreen = '/competitions';
+  static const String competitionDetailsScreen = '/competitionDetails';
 
 }
