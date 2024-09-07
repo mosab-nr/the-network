@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:the_network/screens/universities/university_card.dart';
-import 'package:the_network/screens/main_screen.dart';
+import 'university_card.dart';
 
 class UniversitiesScreen extends StatefulWidget {
   const UniversitiesScreen({super.key});
@@ -11,19 +9,28 @@ class UniversitiesScreen extends StatefulWidget {
 }
 
 class _UniversitiesScreenState extends State<UniversitiesScreen> {
-
-
-
+  int? expandedCardIndex;
 
   @override
   Widget build(BuildContext context) {
-    return  ListView.builder(
-      itemCount: 5,
-      shrinkWrap: true,
+    final universities = [
+      {'name': 'جامعة أ', 'departments': ['قسم 1', 'قسم 2', 'قسم 3']},
+      {'name': 'جامعة ب', 'departments': ['قسم 1', 'قسم 2']},
+      {'name': 'جامعة ج', 'departments': ['قسم 1', 'قسم 2', 'قسم 3', 'قسم 4']},
+    ];
+
+    return ListView.builder(
+      itemCount: universities.length,
       itemBuilder: (context, index) {
         return UniversityCard(
-          universityName: 'جامعة $index',
-          departmentCount: 3,
+          universityName: universities[index]['name'].toString(),
+          departments: universities[index]['departments'] as List<String>,
+          isExpanded: expandedCardIndex == index,
+          onExpand: () {
+            setState(() {
+              expandedCardIndex = expandedCardIndex == index ? null : index;
+            });
+          },
         );
       },
     );

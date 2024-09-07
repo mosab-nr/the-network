@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 
 class UniversityCard extends StatefulWidget {
   final String universityName;
-  final int departmentCount;
+  final List<String> departments;
+  final bool isExpanded;
+  final VoidCallback onExpand;
 
-   UniversityCard({
+  const UniversityCard({
     super.key,
     required this.universityName,
-    required this.departmentCount
+    required this.departments,
+    required this.isExpanded,
+    required this.onExpand,
   });
 
   @override
@@ -15,26 +19,55 @@ class UniversityCard extends StatefulWidget {
 }
 
 class _UniversityCardState extends State<UniversityCard> {
-  bool isExpanded = false;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  int? expandedDepartmentIndex;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        title: Text(widget.universityName),
-        subtitle: Text('عدد الأقسام : ${widget.departmentCount.toString()}'),
-        trailing: IconButton(
-          icon: Icon(Icons.arrow_drop_down),
-          onPressed: () {
-            isExpanded = !isExpanded;
-          },
-        ),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(widget.universityName),
+            subtitle: Text('عدد الأقسام : ${widget.departments.length}'),
+            trailing: IconButton(
+              icon: Icon(widget.isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+              onPressed: widget.onExpand,
+            ),
+          ),
+          if (widget.isExpanded)
+            Column(
+              children: widget.departments.asMap().entries.map((entry) {
+                int index = entry.key;
+                String department = entry.value;
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(department),
+                      trailing: IconButton(
+                        icon: Icon(expandedDepartmentIndex == index ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                        onPressed: () {
+                          setState(() {
+                            expandedDepartmentIndex = expandedDepartmentIndex == index ? null : index;
+                          });
+                        },
+                      ),
+                    ),
+                    if (expandedDepartmentIndex == index)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Add more detailed information here
+                            ElevatedButton(onPressed: (){}, child: Text('محادثة $department')),
+                          ],
+                        ),
+                      ),
+                  ],
+                );
+              }).toList(),
+            ),
+        ],
       ),
     );
   }
