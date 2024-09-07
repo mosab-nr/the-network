@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:the_network/core/constants/routes_name.dart';
+import 'package:the_network/navigation/routes_name.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
         );
-        Navigator.pushReplacementNamed(context, RouteName.universities);
+        Navigator.pushReplacementNamed(context, RouteName.mainScreen);
       }
     } on FirebaseAuthException catch (e) {
       String message;

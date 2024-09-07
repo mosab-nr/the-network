@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:the_network/screens/main_screen.dart';
+import 'package:the_network/navigation/routes_generator.dart';
+
+import 'navigation/routes_name.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -7,18 +9,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      // localizationsDelegates: [
-      //   DefaultMaterialLocalizations.delegate,
-      //   DefaultCupertinoLocalizations.delegate,
-      //   DefaultWidgetsLocalizations.delegate,
-      // ],
-      // supportedLocales: [
-      //    Locale('ar',''),
-      // ],
       themeMode: ThemeMode.system,
-      // onGenerateRoute: RouteGenerator.generateRoute,
-      // initialRoute: RouteName.login,
-      home: MainScreen(),
+      onGenerateRoute: RouteGenerator.generateRoute,
+      initialRoute: RouteName.splashScreen,
     );
   }
 }

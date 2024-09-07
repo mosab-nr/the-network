@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:the_network/core/constants/routes_name.dart';
+import 'package:the_network/navigation/routes_name.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -90,6 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextButton(
                       onPressed: () {
                         // Navigate to login screen
+                        Navigator.pushReplacementNamed(context, RouteName.login);
                       },
                       child: const Text('تسجيل الدخول'),
                     ),

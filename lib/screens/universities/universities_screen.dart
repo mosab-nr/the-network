@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'university_card.dart';
 
 class UniversitiesScreen extends StatefulWidget {
@@ -14,9 +15,18 @@ class _UniversitiesScreenState extends State<UniversitiesScreen> {
   @override
   Widget build(BuildContext context) {
     final universities = [
-      {'name': 'جامعة أ', 'departments': ['قسم 1', 'قسم 2', 'قسم 3']},
-      {'name': 'جامعة ب', 'departments': ['قسم 1', 'قسم 2']},
-      {'name': 'جامعة ج', 'departments': ['قسم 1', 'قسم 2', 'قسم 3', 'قسم 4']},
+      {
+        'name': 'جامعة أ',
+        'departments': ['قسم 1', 'قسم 2', 'قسم 3']
+      },
+      {
+        'name': 'جامعة ب',
+        'departments': ['قسم 1', 'قسم 2']
+      },
+      {
+        'name': 'جامعة ج',
+        'departments': ['قسم 1', 'قسم 2', 'قسم 3', 'قسم 4']
+      },
     ];
 
     return ListView.builder(
