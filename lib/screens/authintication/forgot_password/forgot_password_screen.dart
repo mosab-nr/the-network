@@ -1,5 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:the_network/core/constants/routes_name.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -11,19 +12,34 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void _showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
+  Future<void> _resetPassword() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _auth.sendPasswordResetEmail(email: _emailController.text);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('تم إرسال رابط إعادة تعيين كلمة المرور')),
+          );
+          Navigator.pushReplacementNamed(context, RouteName.login);
+        }
+      } on FirebaseAuthException catch (e) {
+        String message;
+        if (e.code == 'user-not-found') {
+          message = 'لم يتم العثور على المستخدم';
+        } else {
+          message = 'حدث خطأ ما';
+        }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        }
+      }
+    }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -54,13 +70,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Perform forgot password action
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('جاري إرسال رابط استعادة كلمة المرور ...')),
-                      );
-                      _showToast('تحقق من بريدك الإلكتروني');
-                    }
+                    _resetPassword();
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 48.0),

@@ -20,7 +20,7 @@ void main() async {
 // Todo: Initialize Authentication
 
   runApp(const MyApp());
-  FlutterNativeSplash.remove();
+
 }
 
 void configureFirestore() {
