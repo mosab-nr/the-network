@@ -17,7 +17,7 @@ class CompetitionDetailsScreen extends StatefulWidget {
   });
 
   @override
-  _CompetitionDetailsScreenState createState() => _CompetitionDetailsScreenState();
+  State<CompetitionDetailsScreen> createState() => _CompetitionDetailsScreenState();
 }
 
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
