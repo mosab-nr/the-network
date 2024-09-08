@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                     return null;
                   },
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_network/navigation/routes_name.dart';
@@ -17,6 +18,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                     return null;
                   },
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16.0),
                 TextFormField(
@@ -111,6 +114,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+
+        await _firestore.collection('users').doc(credential.user!.uid).set({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'createdAt': FieldValue.serverTimestamp()
+        });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('تم إنشاء الحساب بنجاح')));
@@ -134,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             SnackBar(content: Text(message)),
           );
         }
-      } catch (e){
+      } catch (e) {
         log(e.toString());
       }
     }

@@ -7,6 +7,7 @@ import 'package:the_network/screens/competitions/competitions_screen.dart';
 import 'package:the_network/screens/main_screen.dart';
 
 import '../screens/competitions/competition_details_screen.dart';
+import '../screens/profile/profile_screen.dart';
 import '../screens/splash_screen.dart';
 
 class RouteGenerator {
@@ -22,6 +23,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
       case RouteName.mainScreen:
         return MaterialPageRoute(builder: (_) => const MainScreen());
+      case RouteName.profileScreen:
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case RouteName.competitionsScreen:
         return MaterialPageRoute(builder: (_) => const CompetitionsScreen());
       case RouteName.competitionDetailsScreen:

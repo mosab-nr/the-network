@@ -66,6 +66,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     }
                     return null;
                   },
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(

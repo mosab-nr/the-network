@@ -23,6 +23,7 @@ class CompetitionDetailsScreen extends StatefulWidget {
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   late int reactions;
   late int comments;
+  bool isLiked = false;
   final TextEditingController _commentController = TextEditingController();
 
   @override
@@ -32,9 +33,14 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
     comments = widget.comments;
   }
 
-  void _addReaction() {
+  void _toggleLike() {
     setState(() {
-      reactions++;
+      if (isLiked) {
+        reactions--;
+      } else {
+        reactions++;
+      }
+      isLiked = !isLiked;
     });
   }
 
@@ -84,8 +90,11 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.thumb_up),
-                          onPressed: _addReaction,
+                          icon: Icon(
+                            isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
+                            color: isLiked ? Colors.blue : null,
+                          ),
+                          onPressed: _toggleLike,
                         ),
                         Text('التفاعلات: $reactions'),
                       ],

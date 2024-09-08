@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_network/navigation/routes_name.dart';
 import 'package:the_network/screens/competitions/competitions_screen.dart';
 import 'package:the_network/screens/universities/universities_screen.dart';
 
@@ -65,6 +66,13 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(getTitle(_currentIndex)),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteName.profileScreen);
+                },
+                icon: const Icon(Icons.person))
+          ],
         ),
         body: _pages[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
