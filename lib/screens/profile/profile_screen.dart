@@ -31,6 +31,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _profileImageUrl;
   String _gender = 'ذكر';
   DateTime? _dob;
+  bool _isUploading = false;
+  double _uploadProgress = 0.0;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -41,6 +44,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final user = _auth.currentUser;
     if (user != null) {
       final doc = await _firestore.collection('users').doc(user.uid).get();
@@ -58,6 +65,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _universityController.text = data['university'] ?? '';
       }
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _saveUserData() async {
@@ -93,21 +104,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
         if (pickedFile != null) {
+          setState(() {
+            _isUploading = true;
+          });
+
           final user = _auth.currentUser;
           if (user != null) {
             final file = File(pickedFile.path);
-            final storageRef = _storage.ref().child('profile_images').child(user.uid);
-            await storageRef.putFile(file);
-            final downloadUrl = await storageRef.getDownloadURL();
+            final userName = _nameController.text;
+            final storageRef = _storage
+                .ref()
+                .child('users')
+                .child(userName)
+                .child('profile_image.jpg');
+            final uploadTask = storageRef.putFile(file);
 
-            setState(() {
-              _profileImageUrl = downloadUrl;
+            uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+              setState(() {
+                _uploadProgress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              });
             });
 
-            await _firestore.collection('users').doc(user.uid).update({
-              'profileImageUrl': downloadUrl,
+            await uploadTask.whenComplete(() async {
+              final downloadUrl = await storageRef.getDownloadURL();
+              setState(() {
+                _profileImageUrl = downloadUrl;
+                _isUploading = false;
+              });
+              print('Profile image uploaded successfully: $downloadUrl');
+            }).catchError((error) {
+              setState(() {
+                _isUploading = false;
+              });
+              print('Error uploading profile image: $error');
             });
           }
+        } else {
+          print('No image selected');
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,6 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     }
   }
+
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -139,110 +174,138 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           title: const Text('الملف الشخصي'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: _profileImageUrl != null
-                        ? NetworkImage(_profileImageUrl!)
-                        : const AssetImage('assets/logos/thenetwrok.jpg')
-                            as ImageProvider,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'الإسم الكامل'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'من فضلك أدخل الإسم الكامل';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _emailController,
-                  decoration:
-                      const InputDecoration(labelText: 'البريد الإلكتروني'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'من فضلك أدخل البريد الإلكتروني';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _bioController,
-                  decoration: const InputDecoration(labelText: 'نبذة عني'),
-                  maxLines: 3,
-                  maxLength: 100,
-                  keyboardType: TextInputType.multiline,
-                ),
-                const SizedBox(height: 16.0),
-                const Text('الجنس'),
-                Row(
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
                   children: [
-                    Expanded(
-                      child: RadioListTile<String>(
-                        title: const Text('ذكر'),
-                        value: 'ذكر',
-                        groupValue: _gender,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _gender = value!;
-                          });
-                        },
+                    GestureDetector(
+                      onTap: _pickImage,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundImage: _profileImageUrl != null
+                                ? NetworkImage(_profileImageUrl!)
+                                : const AssetImage(
+                                        'assets/images/profile_placeholder.png')
+                                    as ImageProvider,
+                          ),
+                          if (_isUploading)
+                            CircularProgressIndicator(
+                              value: _uploadProgress / 100,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.blue),
+                            ),
+                          if (_isUploading)
+                            Text(
+                              '${_uploadProgress.toStringAsFixed(0)}%',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                        ],
                       ),
                     ),
-                    Expanded(
-                      child: RadioListTile<String>(
-                        title: const Text('أنثى'),
-                        value: 'أنثى',
-                        groupValue: _gender,
-                        onChanged: (String? value) {
-                          setState(() {
-                            _gender = value!;
-                          });
-                        },
-                      ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration:
+                          const InputDecoration(labelText: 'الإسم الكامل'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'من فضلك أدخل الإسم الكامل';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration:
+                          const InputDecoration(labelText: 'البريد الإلكتروني'),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'من فضلك أدخل البريد الإلكتروني';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _bioController,
+                      decoration: const InputDecoration(labelText: 'نبذة عني'),
+                      maxLines: 3,
+                      maxLength: 100,
+                      keyboardType: TextInputType.multiline,
+                    ),
+                    const SizedBox(height: 16.0),
+                    const Text('الجنس'),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('ذكر'),
+                            value: 'ذكر',
+                            groupValue: _gender,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _gender = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('أنثى'),
+                            value: 'أنثى',
+                            groupValue: _gender,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _gender = value!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _locationController,
+                      decoration:
+                          const InputDecoration(labelText: 'من أين أنت'),
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _dobController,
+                      decoration:
+                          const InputDecoration(labelText: 'تاريخ الميلاد'),
+                      readOnly: true,
+                      onTap: _pickDate,
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _universityController,
+                      decoration: const InputDecoration(
+                          labelText: 'الجامعة التي تدرس فيها'),
+                    ),
+                    const SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: _saveUserData,
+                      child: const Text('حفظ المعلومات'),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _locationController,
-                  decoration: const InputDecoration(labelText: 'من أين أنت'),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _dobController,
-                  decoration: const InputDecoration(labelText: 'تاريخ الميلاد'),
-                  readOnly: true,
-                  onTap: _pickDate,
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _universityController,
-                  decoration: const InputDecoration(
-                      labelText: 'الجامعة التي تدرس فيها'),
-                ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _saveUserData,
-                  child: const Text('حفظ المعلومات'),
-                ),
-              ],
+              ),
             ),
-          ),
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
         ),
       ),
     );
