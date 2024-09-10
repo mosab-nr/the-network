@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_network/navigation/routes_name.dart';
 import 'package:the_network/screens/competitions/competitions_screen.dart';
+import 'package:the_network/screens/summaries/summaries_screen.dart';
 import 'package:the_network/screens/universities/universities_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -21,16 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     const UniversitiesScreen(),
     const CompetitionsScreen(),
-    // const Center(
-    //     child: Text(
-    //   'المسابقات',
-    //   style: TextStyle(color: Colors.black),
-    // )),
-    const Center(
-        child: Text(
-      'الملخصات',
-      style: TextStyle(color: Colors.black),
-    )),
+    const SummariesScreen(),
     const Center(
         child: Text(
       'أخرى',

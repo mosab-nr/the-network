@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_network/navigation/routes_name.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,6 +20,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUserName();
+  }
+
+  Future<void> _initializeUserName() async {
+    User? user = _auth.currentUser;
+    if (user != null && user.displayName != null) {
+      _nameController.text = user.displayName!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,14 +140,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
           password: _passwordController.text,
         );
 
+        await credential.user!.sendEmailVerification();
+
         await _firestore.collection('users').doc(credential.user!.uid).set({
           'name': _nameController.text,
           'email': _emailController.text,
           'createdAt': FieldValue.serverTimestamp()
         });
+
+        // Save name in SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userName', _nameController.text);
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('تم إنشاء الحساب بنجاح')));
+            const SnackBar(
+                content: Text(
+                    'تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني.')),
+          );
 
           Navigator.pushNamed(context, RouteName.login);
         }

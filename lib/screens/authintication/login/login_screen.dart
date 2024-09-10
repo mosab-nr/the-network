@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_network/navigation/routes_name.dart';
@@ -108,32 +110,39 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    try {
-      final credential = await _auth.signInWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
+    if (_formKey.currentState!.validate()) {
+      try {
+        final credential = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم تسجيل الدخول بنجاح')),
-        );
-        Navigator.pushNamed(context, RouteName.mainScreen);
-      }
-    } on FirebaseAuthException catch (e) {
-      String message;
-      if (e.code == 'user-not-found') {
-        message = 'البريد الإلكتروني غير موجود';
-      } else if (e.code == 'wrong-password') {
-        message = 'كلمة المرور غير صحيحة';
-      } else if (e.code == 'too-many-requests') {
-        message =
-            'تم حظر جميع الطلبات من هذا الجهاز بسبب نشاط غير عادي. حاول مرة أخرى لاحقًا أو أعد تعيين كلمة المرور الخاصة بك.';
-      } else {
-        message = 'حدث خطأ غير معروف';
-      }
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        if (credential.user!.emailVerified) {
+          Navigator.pushReplacementNamed(context, RouteName.mainScreen);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content:
+                    Text('يرجى التحقق من بريدك الإلكتروني لتسجيل الدخول.')),
+          );
+          await _auth.signOut();
+        }
+      } on FirebaseAuthException catch (e) {
+        String message;
+        if (e.code == 'user-not-found') {
+          message = 'لم يتم العثور على مستخدم بهذا البريد الإلكتروني.';
+        } else if (e.code == 'wrong-password') {
+          message = 'كلمة المرور غير صحيحة.';
+        } else {
+          message = 'حدث خطأ ما';
+        }
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        }
+      } catch (e) {
+        log(e.toString());
       }
     }
   }
