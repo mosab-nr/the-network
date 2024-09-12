@@ -69,46 +69,49 @@ class _SuggestionsScreen extends State<SuggestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('الإقتراحات'),
-        automaticallyImplyLeading: false,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('suggestions').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final complaints = snapshot.data!.docs;
-                return ListView.builder(
-                  itemCount: complaints.length,
-                  itemBuilder: (context, index) {
-                    final doc = complaints[index];
-                    return FutureBuilder<Complaint>(
-                      future: Complaint.fromDocument(doc),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                        final complaint = snapshot.data!;
-                        return ComplaintCard(complaint: complaint);
-                      },
-                    );
-                  },
-                );
-              },
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('الإقتراحات'),
+          automaticallyImplyLeading: false,
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _firestore.collection('suggestions').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final complaints = snapshot.data!.docs;
+                  return ListView.builder(
+                    itemCount: complaints.length,
+                    itemBuilder: (context, index) {
+                      final doc = complaints[index];
+                      return FutureBuilder<Complaint>(
+                        future: Complaint.fromDocument(doc),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                          final complaint = snapshot.data!;
+                          return ComplaintCard(complaint: complaint);
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddComplaintDialog,
-        child: const Icon(Icons.add),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _showAddComplaintDialog,
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
