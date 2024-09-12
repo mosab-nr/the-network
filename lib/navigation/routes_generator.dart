@@ -5,6 +5,7 @@ import 'package:the_network/screens/authintication/login/login_screen.dart';
 import 'package:the_network/screens/authintication/register/register_screen.dart';
 import 'package:the_network/screens/competitions/competitions_screen.dart';
 import 'package:the_network/screens/main_screen.dart';
+import 'package:the_network/screens/universities/universities_screen.dart';
 
 import '../screens/competitions/competition_details_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -31,20 +32,14 @@ class RouteGenerator {
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (_) => CompetitionDetailsScreen(
-              title: args['title'],
-              reactions: args['reactions'],
-              comments: args['comments'],
-              image: args['image'],
-              description: args['description'],
-            )
-        );
-      default:
-        return MaterialPageRoute(
-            builder: (_) => Scaffold(
-                  body: Center(
-                    child: Text('No route defined for ${settings.name}'),
-                  ),
+                  title: args['title'],
+                  reactions: args['reactions'],
+                  comments: args['comments'],
+                  image: args['image'],
+                  description: args['description'],
                 ));
+      default:
+        return MaterialPageRoute(builder: (_) => MainScreen());
     }
   }
 }

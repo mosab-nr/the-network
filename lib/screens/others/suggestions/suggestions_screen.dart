@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 import '../../../model/complaint.dart';
 
-class ComplaintsScreen extends StatefulWidget {
-  const ComplaintsScreen({super.key});
+class SuggestionsScreen extends StatefulWidget {
+  const SuggestionsScreen({Key? key}) : super(key: key);
 
   @override
-  State<ComplaintsScreen> createState() => _ComplaintsScreenState();
+  _SuggestionsScreen createState() => _SuggestionsScreen();
 }
 
-class _ComplaintsScreenState extends State<ComplaintsScreen> {
+class _SuggestionsScreen extends State<SuggestionsScreen> {
   final TextEditingController _complaintController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -28,7 +28,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
         description: _complaintController.text,
         likes: 0,
       );
-      await _firestore.collection('complaints').add(complaint.toMap());
+      await _firestore.collection('suggestions').add(complaint.toMap());
       _complaintController.clear();
     }
   }
@@ -38,11 +38,11 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('أضف شكوى'),
+          title: const Text('أضف إقتراح'),
           content: TextField(
             controller: _complaintController,
             decoration: const InputDecoration(
-              labelText: 'وصف الشكوى',
+              labelText: 'وصف الإقتراح',
               border: OutlineInputBorder(),
             ),
             maxLines: 3,
@@ -59,7 +59,7 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
                 _addComplaint();
                 Navigator.of(context).pop();
               },
-              child: const Text('نشر الشكوى'),
+              child: const Text('نشر الإقتراح'),
             ),
           ],
         );
@@ -71,14 +71,14 @@ class _ComplaintsScreenState extends State<ComplaintsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الشكاوى'),
+        title: const Text('الإقتراحات'),
         automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('complaints').snapshots(),
+              stream: _firestore.collection('suggestions').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -138,7 +138,7 @@ class _ComplaintCardState extends State<ComplaintCard> {
     final user = _auth.currentUser;
     if (user != null) {
       final likeDoc = await FirebaseFirestore.instance
-          .collection('complaints')
+          .collection('suggestions')
           .doc(widget.complaint.id)
           .collection('likes')
           .doc(user.uid)
@@ -159,11 +159,11 @@ class _ComplaintCardState extends State<ComplaintCard> {
           _isLiked ? widget.complaint.likes + 1 : widget.complaint.likes - 1;
       if (newLikes < 0) newLikes = 0; // Ensure likes do not go below 0
       await FirebaseFirestore.instance
-          .collection('complaints')
+          .collection('suggestions')
           .doc(widget.complaint.id)
           .update({'likes': newLikes});
       await FirebaseFirestore.instance
-          .collection('complaints')
+          .collection('suggestions')
           .doc(widget.complaint.id)
           .collection('likes')
           .doc(user.uid)

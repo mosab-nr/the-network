@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:the_network/screens/others/complaints/complaints_screen.dart';
+import 'package:the_network/screens/others/suggestions/suggestions_screen.dart';
 import 'package:the_network/screens/others/voting/voting_screen.dart';
+
+import 'complaints/complaints_screen.dart';
 
 class OtherScreen extends StatefulWidget {
   const OtherScreen({super.key});
@@ -9,7 +11,8 @@ class OtherScreen extends StatefulWidget {
   State<OtherScreen> createState() => _OtherScreenState();
 }
 
-class _OtherScreenState extends State<OtherScreen> with SingleTickerProviderStateMixin {
+class _OtherScreenState extends State<OtherScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -39,10 +42,10 @@ class _OtherScreenState extends State<OtherScreen> with SingleTickerProviderStat
         Expanded(
           child: TabBarView(
             controller: _tabController,
-            children: const [
+            children:  const [
               VotingScreen(),
               ComplaintsScreen(),
-              Center(child: Text('الإقتراحات')),
+              SuggestionsScreen(),
             ],
           ),
         ),

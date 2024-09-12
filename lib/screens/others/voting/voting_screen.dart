@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:the_network/screens/others/voting/vote_service.dart';
 
 import '../../../model/vote.dart';
@@ -90,9 +90,13 @@ class _VotingScreenState extends State<VotingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _isLoading
-          ? const Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('التصويت'),
+        automaticallyImplyLeading: false,
+      ),
+      body: _isLoading
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
