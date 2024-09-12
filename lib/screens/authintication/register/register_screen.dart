@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:the_network/navigation/routes_name.dart';
+
+import '../../../singleton/shared_pref_manager.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -132,55 +133,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Future<void> _register() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        final credential = await _auth.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+Future<void> _register() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      await credential.user!.sendEmailVerification();
+
+      await _firestore.collection('users').doc(credential.user!.uid).set({
+        'name': _nameController.text,
+        'email': _emailController.text,
+        'createdAt': FieldValue.serverTimestamp()
+      });
+
+      // Save name in SharedPreferences using SharedPrefManager
+      await SharedPrefManager().init();
+      await SharedPrefManager().setUserName(_nameController.text);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني.')),
         );
 
-        await credential.user!.sendEmailVerification();
-
-        await _firestore.collection('users').doc(credential.user!.uid).set({
-          'name': _nameController.text,
-          'email': _emailController.text,
-          'createdAt': FieldValue.serverTimestamp()
-        });
-
-        // Save name in SharedPreferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userName', _nameController.text);
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text(
-                    'تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني.')),
-          );
-
-          Navigator.pushNamed(context, RouteName.login);
-        }
-      } on FirebaseAuthException catch (e) {
-        String message;
-        if (e.code == 'weak-password') {
-          message = 'كلمة المرور ضعيفة جدًا';
-        } else if (e.code == 'email-already-in-use') {
-          message = 'البريد الإلكتروني مستخدم بالفعل';
-        } else if (e.code == 'too-many-requests') {
-          message =
-              'تم حظر جميع الطلبات من هذا الجهاز بسبب نشاط غير عادي. حاول مرة أخرى لاحقًا أو أعد تعيين كلمة المرور الخاصة بك.';
-        } else {
-          message = 'حدث خطأ ما';
-        }
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-        }
-      } catch (e) {
-        log(e.toString());
+        Navigator.pushNamed(context, RouteName.login);
       }
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'weak-password') {
+        message = 'كلمة المرور ضعيفة جدًا';
+      } else if (e.code == 'email-already-in-use') {
+        message = 'البريد الإلكتروني مستخدم بالفعل';
+      } else if (e.code == 'too-many-requests') {
+        message =
+            'تم حظر جميع الطلبات من هذا الجهاز بسبب نشاط غير عادي. حاول مرة أخرى لاحقًا أو أعد تعيين كلمة المرور الخاصة بك.';
+      } else {
+        message = 'حدث خطأ ما';
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
-}
+}}

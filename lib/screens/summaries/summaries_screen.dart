@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../singleton/shared_pref_manager.dart';
 
 class SummariesScreen extends StatefulWidget {
   const SummariesScreen({super.key});
@@ -35,9 +35,9 @@ class _SummariesScreenState extends State<SummariesScreen> {
   }
 
   Future<void> _loadUserNameFromSharedPref() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await SharedPrefManager().init();
     setState(() {
-      name = prefs.getString('userName');
+      name = SharedPrefManager().getUserName();
     });
   }
 

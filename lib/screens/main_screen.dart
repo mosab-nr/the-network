@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_network/navigation/routes_name.dart';
 import 'package:the_network/screens/competitions/competitions_screen.dart';
+import 'package:the_network/screens/others/others_screen.dart';
 import 'package:the_network/screens/summaries/summaries_screen.dart';
 import 'package:the_network/screens/universities/universities_screen.dart';
 
@@ -23,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
     const UniversitiesScreen(),
     const CompetitionsScreen(),
     const SummariesScreen(),
+    OtherScreen(),
     const Center(
         child: Text(
       'أخرى',

@@ -17,7 +17,7 @@ void main() async {
 
 // Todo: Initialize Authentication
 
-  runApp(const MyApp());
+  runApp( const MyApp(),);
 }
 
 void configureFirestore() {

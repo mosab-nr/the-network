@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:the_network/navigation/routes_name.dart';
 
+import '../../../singleton/shared_pref_manager.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -118,6 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
 
         if (credential.user!.emailVerified) {
+          SharedPrefManager().setFirstTimeLogin(false);
+          SharedPrefManager()
+              .setUserName(credential.user!.displayName ?? 'unknown_user');
           Navigator.pushReplacementNamed(context, RouteName.mainScreen);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

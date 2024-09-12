@@ -166,6 +166,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _logout() async {
+    await _auth.signOut();
+    Navigator.of(context).pushReplacementNamed('/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -173,6 +178,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('الملف الشخصي'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: _logout,
+            ),
+          ],
         ),
         body: Stack(
           children: [
@@ -192,8 +203,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             backgroundImage: _profileImageUrl != null
                                 ? NetworkImage(_profileImageUrl!)
                                 : const AssetImage(
-                                        'assets/images/profile_placeholder.png')
+                                        'assets/images/profileplaceholder.jpg')
                                     as ImageProvider,
+                            child: ClipOval(
+                              child: _profileImageUrl != null
+                                  ? Image.network(
+                                      _profileImageUrl!,
+                                      fit: BoxFit.cover,
+                                      width: 100,
+                                      height: 100,
+                                    )
+                                  : Image.asset(
+                                      'assets/logos/thenetwrok.jpg',
+                                      fit: BoxFit.cover,
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                            ),
                           ),
                           if (_isUploading)
                             CircularProgressIndicator(
