@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../conversation/conversation_screen.dart';
 
 class UniversityCard extends StatefulWidget {
   final String universityName;
@@ -58,8 +59,20 @@ class _UniversityCardState extends State<UniversityCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Add more detailed information here
-                            ElevatedButton(onPressed: (){}, child: Text('محادثة $department')),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ConversationScreen(
+                                      universityName: widget.universityName,
+                                      departmentName: department,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text('محادثة $department'),
+                            ),
                           ],
                         ),
                       ),

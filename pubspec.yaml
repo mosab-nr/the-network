@@ -54,6 +54,7 @@ dependencies:
   path_provider: ^2.1.4
   shared_preferences: ^2.3.2
   flutter_local_notifications: ^17.2.2
+  faker: ^2.2.0
 
 dev_dependencies:
   flutter_test:

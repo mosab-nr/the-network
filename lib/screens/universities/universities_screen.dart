@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'university_card.dart';
 
@@ -14,32 +15,30 @@ class _UniversitiesScreenState extends State<UniversitiesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final universities = [
-      {
-        'name': 'جامعة أ',
-        'departments': ['قسم 1', 'قسم 2', 'قسم 3']
-      },
-      {
-        'name': 'جامعة ب',
-        'departments': ['قسم 1', 'قسم 2']
-      },
-      {
-        'name': 'جامعة ج',
-        'departments': ['قسم 1', 'قسم 2', 'قسم 3', 'قسم 4']
-      },
-    ];
-
-    return ListView.builder(
-      itemCount: universities.length,
-      itemBuilder: (context, index) {
-        return UniversityCard(
-          universityName: universities[index]['name'].toString(),
-          departments: universities[index]['departments'] as List<String>,
-          isExpanded: expandedCardIndex == index,
-          onExpand: () {
-            setState(() {
-              expandedCardIndex = expandedCardIndex == index ? null : index;
-            });
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('universities').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('لا يوجد بيانات'));
+        }
+        final universities = snapshot.data!.docs;
+        return ListView.builder(
+          itemCount: universities.length,
+          itemBuilder: (context, index) {
+            final university = universities[index];
+            return UniversityCard(
+              universityName: university['name'],
+              departments: List<String>.from(university['departments']),
+              isExpanded: expandedCardIndex == index,
+              onExpand: () {
+                setState(() {
+                  expandedCardIndex = expandedCardIndex == index ? null : index;
+                });
+              },
+            );
           },
         );
       },

@@ -1,38 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:the_network/model/competition.dart';
+
 import 'competition_card.dart';
 
-class CompetitionsScreen extends StatelessWidget {
+class CompetitionsScreen extends StatefulWidget {
   const CompetitionsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final competitions = [
-      {
-        'title': 'مسابقة أ',
-        'reactions': 120,
-        'comments': 45,
-        'image': 'assets/logos/splashlt.png',
-        'description': 'هذه وصف موجز للمسابقة أ. إنها مسابقة مثيرة للغاية يجب أن تشارك فيها.'
-      },
-      {
-        'title': 'مسابقة ب',
-        'reactions': 85,
-        'comments': 30,
-        'image': 'assets/logos/splashlt.png',
-        'description': 'هذه وصف موجز للمسابقة ب. إنها مسابقة مثيرة للغاية يجب أن تشارك فيها.'
-      },
-      // Add more competitions here
-    ];
+  State<CompetitionsScreen> createState() => _CompetitionsScreenState();
+}
 
-    return ListView.builder(
-      itemCount: competitions.length,
-      itemBuilder: (context, index) {
-        return CompetitionCard(
-          title: competitions[index]['title'].toString(),
-          reactions: competitions[index]['reactions'] as int,
-          comments: competitions[index]['comments'] as int,
-          image: competitions[index]['image'].toString(),
-          description: competitions[index]['description'].toString(),
+class _CompetitionsScreenState extends State<CompetitionsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('competitions').snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final competitions = snapshot.data!.docs
+            .map((doc) => Competition.fromDocument(doc))
+            .toList();
+
+        return ListView.builder(
+          itemCount: competitions.length,
+          itemBuilder: (context, index) {
+            final competition = competitions[index];
+            return CompetitionCard(competition: competition);
+          },
         );
       },
     );

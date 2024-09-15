@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _loadUserData();
     _dobController.text =
-        _dob != null ? _dob!.toLocal().toString().split(' ')[0] : '';
+    _dob != null ? _dob!.toLocal().toString().split(' ')[0] : '';
   }
 
   Future<void> _loadUserData() async {
@@ -61,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _dob = (data['dob'] as Timestamp?)?.toDate();
         _profileImageUrl = data['profileImageUrl'];
         _dobController.text =
-            _dob != null ? _dob!.toLocal().toString().split(' ')[0] : '';
+        _dob != null ? _dob!.toLocal().toString().split(' ')[0] : '';
         _universityController.text = data['university'] ?? '';
       }
     }
@@ -132,16 +133,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _profileImageUrl = downloadUrl;
                 _isUploading = false;
               });
-              print('Profile image uploaded successfully: $downloadUrl');
+              log('Profile image uploaded successfully: $downloadUrl');
             }).catchError((error) {
               setState(() {
                 _isUploading = false;
               });
-              print('Error uploading profile image: $error');
+              log('Error uploading profile image: $error');
             });
           }
         } else {
-          print('No image selected');
+          log('No image selected');
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -203,29 +204,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             backgroundImage: _profileImageUrl != null
                                 ? NetworkImage(_profileImageUrl!)
                                 : const AssetImage(
-                                        'assets/images/profileplaceholder.jpg')
-                                    as ImageProvider,
+                                'assets/images/profileplaceholder.jpg')
+                            as ImageProvider,
                             child: ClipOval(
                               child: _profileImageUrl != null
                                   ? Image.network(
-                                      _profileImageUrl!,
-                                      fit: BoxFit.cover,
-                                      width: 100,
-                                      height: 100,
-                                    )
+                                _profileImageUrl!,
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                              )
                                   : Image.asset(
-                                      'assets/logos/thenetwrok.jpg',
-                                      fit: BoxFit.cover,
-                                      width: 100,
-                                      height: 100,
-                                    ),
+                                'assets/logos/thenetwrok.jpg',
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                              ),
                             ),
                           ),
                           if (_isUploading)
                             CircularProgressIndicator(
                               value: _uploadProgress / 100,
                               valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.blue),
+                              AlwaysStoppedAnimation<Color>(Colors.blue),
                             ),
                           if (_isUploading)
                             Text(
@@ -239,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     TextFormField(
                       controller: _nameController,
                       decoration:
-                          const InputDecoration(labelText: 'الإسم الكامل'),
+                      const InputDecoration(labelText: 'الإسم الكامل'),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'من فضلك أدخل الإسم الكامل';
@@ -251,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     TextFormField(
                       controller: _emailController,
                       decoration:
-                          const InputDecoration(labelText: 'البريد الإلكتروني'),
+                      const InputDecoration(labelText: 'البريد الإلكتروني'),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -302,13 +303,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     TextFormField(
                       controller: _locationController,
                       decoration:
-                          const InputDecoration(labelText: 'من أين أنت'),
+                      const InputDecoration(labelText: 'من أين أنت'),
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: _dobController,
                       decoration:
-                          const InputDecoration(labelText: 'تاريخ الميلاد'),
+                      const InputDecoration(labelText: 'تاريخ الميلاد'),
                       readOnly: true,
                       onTap: _pickDate,
                     ),
