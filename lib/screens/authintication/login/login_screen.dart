@@ -29,92 +29,97 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('تسجيل الدخول'),
-        ),
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'البريد الإلكتروني'),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'من فضلك أدخل البريد الإلكتروني';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: const InputDecoration(labelText: 'كلمة المرور'),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'من فضلك أدخل كلمة المرور';
-                        }
-                        if (value.length < 8) {
-                          return 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16.0),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, RouteName.forgotPassword);
-                      },
-                      child: const Text('هل نسيت كلمة المرور؟'),
-                    ),
-                    const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        _login();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 48.0),
+    return WillPopScope(
+      onWillPop: () async {
+        return false; // Prevent back navigation
+      },
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('تسجيل الدخول'),
+          ),
+          body: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(labelText: 'البريد الإلكتروني'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'من فضلك أدخل البريد الإلكتروني';
+                          }
+                          return null;
+                        },
                       ),
-                      child: const Text('تسجيل الدخول'),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('ليس لديك حساب؟'),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, RouteName.register);
-                          },
-                          child: const Text('سجل الآن'),
+                      const SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(labelText: 'كلمة المرور'),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'من فضلك أدخل كلمة المرور';
+                          }
+                          if (value.length < 8) {
+                            return 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, RouteName.forgotPassword);
+                        },
+                        child: const Text('هل نسيت كلمة المرور؟'),
+                      ),
+                      const SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          _login();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 48.0),
                         ),
-                      ],
-                    ),
-                  ],
+                        child: const Text('تسجيل الدخول'),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('ليس لديك حساب؟'),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, RouteName.register);
+                            },
+                            child: const Text('سجل الآن'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (_isLoading)
-              const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text('جاري تسجيل الدخول ...')
-                  ],
+              if (_isLoading)
+                const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      Text('جاري تسجيل الدخول ...')
+                    ],
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
